@@ -1,39 +1,9 @@
 import { Box, Button, Text, TextField, Image } from '@skynexui/components'
+import React from 'react'
+import { useRouter } from 'next/router'
 import appConfig from '../config.json'
 
-function GlobalStyle() {
-    return (
-        <style global jsx>{`
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-                list-style: none;
-            }
-            body {
-                font-family: 'Open Sans', sans-serif;
-            }
-            /* App fit Height */
-            html,
-            body,
-            #__next {
-                min-height: 100vh;
-                display: flex;
-                flex: 1;
-            }
-            #__next {
-                flex: 1;
-            }
-            #__next > * {
-                flex: 1;
-            }
-            /* ./App fit Height */
-        `}</style>
-    )
-}
-
 function Title(props) {
-    console.log(props)
     const Tag = props.tag || 'h1'
     return (
         <>
@@ -51,26 +21,13 @@ function Title(props) {
     )
 }
 
-// //Componente React
-// function HomePage() {
-//     //JSX
-//     return (
-//         <div>
-//             <GlobalStyle />
-//             <Title tag="h2">Boas vindas de volta!</Title>
-//             <h2>Discord Alura Matrix</h2>
-//         </div>
-//     )
-// }
-
-// export default HomePage
-
 export default function PaginaInicial() {
-    const username = 'AjnaMoreira'
+    // const username = 'AjnaMoreira'
+    const [username, setUsername] = React.useState('AjnaMoreira')
+    const roteamento = useRouter()
 
     return (
         <>
-            <GlobalStyle />
             <Box
                 styleSheet={{
                     display: 'flex',
@@ -78,7 +35,7 @@ export default function PaginaInicial() {
                     justifyContent: 'center',
                     backgroundColor: appConfig.theme.colors.primary[500],
                     backgroundImage:
-                        'url(https://virtualbackgrounds.site/wp-content/uploads/2020/08/the-matrix-digital-rain.jpg)',
+                        'url(https://www.gamespot.com/a/uploads/original/1581/15811374/3692632-last%20of%20us%202%20catalina.jpg)',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
                     backgroundBlendMode: 'multiply'
@@ -94,7 +51,7 @@ export default function PaginaInicial() {
                             sm: 'row'
                         },
                         width: '100%',
-                        maxWidth: '700px',
+                        maxWidth: '650px',
                         borderRadius: '5px',
                         padding: '32px',
                         margin: '16px',
@@ -105,6 +62,12 @@ export default function PaginaInicial() {
                     {/* Formulário */}
                     <Box
                         as="form"
+                        onSubmit={function (event) {
+                            event.preventDefault()
+                            console.log('Submeteu')
+                            roteamento.push('/chat')
+                            // window.location.href = '/chat'
+                        }}
                         styleSheet={{
                             display: 'flex',
                             flexDirection: 'column',
@@ -127,6 +90,14 @@ export default function PaginaInicial() {
                         </Text>
 
                         <TextField
+                            // value={username}
+                            onChange={function (event) {
+                                // Onde tá o valor?
+                                const valor = event.target.value
+                                // Trocar o valor
+                                // Através do React e avise a quem precisa
+                                setUsername(valor)
+                            }}
                             fullWidth
                             textFieldColors={{
                                 neutral: {
@@ -141,6 +112,7 @@ export default function PaginaInicial() {
                                 }
                             }}
                         />
+
                         <Button
                             type="submit"
                             label="Entrar"
