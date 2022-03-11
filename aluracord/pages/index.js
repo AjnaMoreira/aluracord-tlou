@@ -21,9 +21,9 @@ function Title(props) {
     )
 }
 
-export default function PaginaInicial() {
-    // const username = 'AjnaMoreira'
-    const [username, setUsername] = React.useState('AjnaMoreira')
+export default function HomePage() {
+    // const username = "AjnaMoreira"
+    const [username, setUsername] = React.useState('')
     const roteamento = useRouter()
 
     return (
@@ -56,7 +56,8 @@ export default function PaginaInicial() {
                         padding: '32px',
                         margin: '16px',
                         boxShadow: '0 2px 10px 0 rgb(0 0 0 / 20%)',
-                        backgroundColor: appConfig.theme.colors.neutrals[700]
+                        backgroundColor: appConfig.theme.colors.neutrals[700],
+                        opacity: 0.8
                     }}
                 >
                     {/* Formulário */}
@@ -65,7 +66,9 @@ export default function PaginaInicial() {
                         onSubmit={function (event) {
                             event.preventDefault()
                             console.log('Submeteu')
+                            // sistema de roteamento do next é o recurso mais adequado para mudar de página:
                             roteamento.push('/chat')
+                            // modo tradicional do navegador para mudar de página, porém precisa fazer um reload:
                             // window.location.href = '/chat'
                         }}
                         styleSheet={{
@@ -91,11 +94,11 @@ export default function PaginaInicial() {
 
                         <TextField
                             // value={username}
-                            onChange={function (event) {
+                            onChange={event => {
                                 // Onde tá o valor?
                                 const valor = event.target.value
-                                // Trocar o valor
-                                // Através do React e avise a quem precisa
+                                // Trocar o valor da variável
+                                // através do React e avise a quem precisa
                                 setUsername(valor)
                             }}
                             fullWidth
@@ -116,6 +119,7 @@ export default function PaginaInicial() {
                         <Button
                             type="submit"
                             label="Entrar"
+                            disabled={!username}
                             fullWidth
                             buttonColors={{
                                 contrastColor:
@@ -152,7 +156,11 @@ export default function PaginaInicial() {
                                 borderRadius: '50%',
                                 marginBottom: '16px'
                             }}
-                            src={`https://github.com/${username}.png`}
+                            src={
+                                username
+                                    ? `https://github.com/${username}.png`
+                                    : `https://cdn.shopify.com/s/files/1/0396/9643/3315/products/navy_1024x.jpg?v=1592507389`
+                            }
                         />
                         <Text
                             variant="body4"
@@ -164,7 +172,7 @@ export default function PaginaInicial() {
                                 borderRadius: '1000px'
                             }}
                         >
-                            {username}
+                            {username || 'usuário'}
                         </Text>
                     </Box>
                     {/* Photo Area */}

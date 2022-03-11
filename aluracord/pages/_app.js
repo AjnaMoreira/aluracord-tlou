@@ -29,6 +29,7 @@ function GlobalStyle() {
     )
 }
 
+// Roda em todas as páginas
 export default function MyApp({ Component, pageProps }) {
     return (
         <>
