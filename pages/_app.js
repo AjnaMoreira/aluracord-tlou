@@ -1,3 +1,6 @@
+import appConfig from '../config.json'
+import React from 'react'
+
 function GlobalStyle() {
     return (
         <style global jsx>{`
@@ -25,6 +28,22 @@ function GlobalStyle() {
                 flex: 1;
             }
             /* ./App fit Height */
+
+            /* Scrollbar chat */
+            .ulChat::-webkit-scrollbar {
+                width: 5px;
+            }
+
+            .ulChat::-webkit-scrollbar-thumb {
+                background-color: ${appConfig.theme.colors.primary['200']};
+                border-radius: 30px;
+            }
+
+            /* Div abaixo do textfield do chat*/
+            .jsx-601528156 {
+                width: 0;
+                height: 0;
+            }
         `}</style>
     )
 }
