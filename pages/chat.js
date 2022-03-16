@@ -1,28 +1,41 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components'
 import React from 'react'
 import appConfig from '../config.json'
-import moment from 'moment'
+
+import { useRouter } from 'next/router'
 import { createClient } from '@supabase/supabase-js'
+import { ButtonSendSticker } from '../src/components/ButtonSendSticker'
 
 const SUPABASE_ANON_KEY =
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltanlmZ2pmemtrd2hla3dremN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDczMDIyNzAsImV4cCI6MTk2Mjg3ODI3MH0.JEtJ2gLxUj0cZCe5a1k4FjOi7PZPZ5yAIGJ01LaRxv0'
 const SUPABASE_URL = 'https://imjyfgjfzkkwhekwkzcv.supabase.co'
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+function escutaMensagensTempoReal(adicionaMensagem) {
+    return supabaseClient
+        .from('mensagens')
+        .on('INSERT', respostaLive => {
+            adicionaMensagem(respostaLive.new)
+        })
+        .subscribe()
+}
 export default function ChatPage() {
-    /*
-    -> Usuário
-    - Digita no campo textarea
-    - Aperta o enter para enviar
-    - Tem que adicionar o texto a listagem
+    const roteamento = useRouter()
+    const usuarioLogado = roteamento.query.username
 
-    -> Dev
-    - [X] Campo criado
-    - [X] Vamos usar o onChange, o useState (ter if para caso seja enter para limpar a variável)
-    - [X] Lista de mensagem
-    */
     const [mensagem, setMensagem] = React.useState('')
-    const [listaMensagens, setListaMensagens] = React.useState([])
+    const [listaMensagens, setListaMensagens] = React.useState([
+        /* {
+            id: 1,
+            from: 'AjnaMoreira',
+            msg: ':sticker: https://www.alura.com.br/imersao-react-4/assets/figurinhas/Figurinha_1.png'
+        },
+        {
+            id: 2,
+            from: 'filgmac',
+            msg: 'Oi'
+        }*/
+    ])
 
     React.useEffect(() => {
         supabaseClient
@@ -32,12 +45,34 @@ export default function ChatPage() {
             .then(({ data }) => {
                 setListaMensagens(data)
             })
+
+        escutaMensagensTempoReal(novaMensagem => {
+            console.log('Nova mensagem: ', novaMensagem)
+            /* 
+            - o trecho abaixo gera um looping infinito.
+             handleNovaMensagem(novaMensagem)
+            - quando essa parte abaixo estava no then de handleNovaMensagem 
+            */
+
+            // setListaMensagens([novaMensagem, ...valorAtualLista])
+
+            /*
+           - sempre passava um valor para o set, agora estamos passando uma função
+           - se passar somente o valor, ela vai pegar a primeira foto que o react tirou, e vai passar a lista vazia
+            */
+
+            // Quando quero passar um valor de referencia (objeto/array): devo passar uma função para o setState
+
+            setListaMensagens(valorAtualLista => {
+                return [novaMensagem, ...valorAtualLista]
+            })
+        })
     }, [])
 
     function handleNovaMensagem(novaMensagem) {
         const message = {
             //id: listaMensagens.length + 1,
-            from: 'AjnaMoreira',
+            from: usuarioLogado,
             msg: novaMensagem
         }
 
@@ -48,8 +83,8 @@ export default function ChatPage() {
                 message
             ])
             .then(({ data }) => {
-                // console.log('Criando mensagem: ', data)
-                setListaMensagens([data[0], ...listaMensagens])
+                console.log('Criando mensagem: ', data)
+                //setListaMensagens([data[0], ...listaMensagens])
             })
 
         setMensagem('')
@@ -119,7 +154,8 @@ export default function ChatPage() {
                         as="form"
                         styleSheet={{
                             display: 'flex',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            justifyContent: 'spaceBetween'
                         }}
                     >
                         <TextField
@@ -170,11 +206,24 @@ export default function ChatPage() {
                                 minWidth: '50px',
                                 minHeight: '50px',
                                 fontSize: '20px',
-                                margin: '0 8px',
+                                marginBottom: '8px',
                                 lineHeight: '0',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center'
+                                justifyContent: 'center',
+                                backgroundColor:
+                                    appConfig.theme.colors.neutrals[300],
+                                marginRight: '12px'
+                            }}
+                        />
+                        {/* CALLBACK -  chamada de retorno: quando alguma coisa que você queria terminou, ele vai executar a função que você passou */}
+                        <ButtonSendSticker
+                            onStickerClick={sticker => {
+                                /* console.log(
+                                    '[USANDO O COMPONENTE] salva esse sticker no banco',
+                                    sticker
+                                )*/
+                                handleNovaMensagem(':sticker:' + sticker)
                             }}
                         />
                     </Box>
@@ -273,10 +322,23 @@ function MessageList(props) {
                                 }}
                                 tag="span"
                             >
+                                {/* {new Date().toLocaleDateString()} */}
                                 {/* {mensagem.create_at} */}
                             </Text>
                         </Box>
-                        {mensagem.msg}
+                        {/* Condicional:
+                        {mensagem.msg.startsWith(':sticker:').toString()} */}
+                        {mensagem.msg.startsWith(':sticker:') ? (
+                            <Image
+                                src={mensagem.msg.replace(':sticker:', '')}
+                                styleSheet={{
+                                    width: '100px'
+                                }}
+                            />
+                        ) : (
+                            mensagem.msg
+                        )}
+                        {/* {mensagem.msg} */}
                     </Text>
                 )
             })}

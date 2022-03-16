@@ -65,9 +65,8 @@ export default function HomePage() {
                         as="form"
                         onSubmit={function (event) {
                             event.preventDefault()
-                            console.log('Submeteu')
                             // sistema de roteamento do next é o recurso mais adequado para mudar de página:
-                            roteamento.push('/chat')
+                            roteamento.push(`/chat?username=${username}`)
                             // modo tradicional do navegador para mudar de página, porém precisa fazer um reload:
                             // window.location.href = '/chat'
                         }}
@@ -93,7 +92,7 @@ export default function HomePage() {
                         </Text>
 
                         <TextField
-                            // value={username}
+                            value={username}
                             onChange={event => {
                                 // Onde tá o valor?
                                 const valor = event.target.value

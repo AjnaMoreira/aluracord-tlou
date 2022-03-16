@@ -30,11 +30,13 @@ function GlobalStyle() {
             /* ./App fit Height */
 
             /* Scrollbar chat */
-            .ulChat::-webkit-scrollbar {
+            .ulChat::-webkit-scrollbar,
+            .ulSticker::-webkit-scrollbar {
                 width: 5px;
             }
 
-            .ulChat::-webkit-scrollbar-thumb {
+            .ulChat::-webkit-scrollbar-thumb,
+            .ulSticker::-webkit-scrollbar-thumb {
                 background-color: ${appConfig.theme.colors.primary['200']};
                 border-radius: 30px;
             }
