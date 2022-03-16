@@ -322,12 +322,13 @@ function MessageList(props) {
                                 }}
                                 tag="span"
                             >
-                                {/* {new Date().toLocaleDateString()} */}
-                                {/* {mensagem.create_at} */}
+                                {new Date(mensagem.created_at).toLocaleString(
+                                    'pt-BR',
+                                    { dateStyle: 'short', timeStyle: 'short' }
+                                )}
                             </Text>
                         </Box>
-                        {/* Condicional:
-                        {mensagem.msg.startsWith(':sticker:').toString()} */}
+
                         {mensagem.msg.startsWith(':sticker:') ? (
                             <Image
                                 src={mensagem.msg.replace(':sticker:', '')}
@@ -338,7 +339,6 @@ function MessageList(props) {
                         ) : (
                             mensagem.msg
                         )}
-                        {/* {mensagem.msg} */}
                     </Text>
                 )
             })}
